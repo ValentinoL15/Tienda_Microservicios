@@ -1,15 +1,15 @@
 package com.valentino.carrito_service.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.valentino.carrito_service.dto.CarritoDTO;
 import com.valentino.carrito_service.dto.CarritoItemsDTO;
 import com.valentino.carrito_service.dto.ProductDTO;
 import com.valentino.carrito_service.dto.UserDTO;
 import com.valentino.carrito_service.model.Carrito;
 import com.valentino.carrito_service.model.CarritoItem;
-import com.valentino.carrito_service.repository.IApiProducts;
-import com.valentino.carrito_service.repository.IApiUsers;
-import com.valentino.carrito_service.repository.ICarritoItemRepository;
-import com.valentino.carrito_service.repository.ICarritoRepository;
+import com.valentino.carrito_service.repository.*;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.ws.rs.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +38,9 @@ public class CarritoItemService implements ICarritoItemService{
 
     @Autowired
     private IApiUsers apiUsers;
+
+    @Autowired
+    private IApiVentas apiVentas;
 
     @Override
     public List<CarritoItemsDTO> getCarritoItems() {
@@ -64,40 +68,54 @@ public class CarritoItemService implements ICarritoItemService{
     }
 
     @Override
+    @CircuitBreaker(name = "users-service", fallbackMethod = "fallbackGetUsersByCarrito")
+    @Retry(name = "users-service")
     public void agregarCarritoItem(Long id_carrito, List<CarritoItemsDTO> itemsDTO) {
         Carrito carrito = carritoRepository.findById(id_carrito)
                 .orElseThrow(() -> new RuntimeException("No se encuentra el carrito"));
 
+        List<CarritoItemsDTO> items = carrito.getItems()
+                .stream().map(
+                        item -> new CarritoItemsDTO(
+                                item.getId_carritoItem(),
+                                item.getProduct_id(),
+                                item.getCantidad(),
+                                item.getTotal()
+                        )
+                ).toList();
+
+        CarritoDTO carri = new CarritoDTO(carrito.getCarrito_id(),carrito.getTotal(),items);
+
+        System.out.println("holi" + carri.total());
         UserDTO user = apiUsers.getUserByCarrito(id_carrito);
+        System.out.println(user);
+
         System.out.println("Mi user:" + user);
         String myUser = SecurityContextHolder.getContext().getAuthentication().getName();
         System.out.println("User: " + user.getUsername() + " ," + " y myUser: " + myUser);
-        if(!user.getUsername().equals(myUser)) {
+        /*if(!user.getUsername().equals(myUser)) {
             throw new BadRequestException("No tienes los permisos para realizar esta acción");
-        }
-
-        if(!carrito.getItems().isEmpty()){
+        }*/
+        System.out.println("gola");
+        /*if(carri.items().size() != 0){
             throw new RuntimeException("El carrito ya ha sido utilizado");
-        }
+        }*/
+        System.out.println("chau");
 
 
         List<CarritoItem> nuevosItems = new ArrayList<>();
-
+        System.out.println("Esta por entrar al for");
         for(CarritoItemsDTO dto: itemsDTO) {
             Optional<CarritoItem> itemExistente = carrito.getItems().stream()
                     .filter(item -> item.getProduct_id().equals(dto.product_id()))
                     .findFirst();
 
-            /*if (itemExistente.isPresent()) {
-                CarritoItem item = itemExistente.get();
-                ProductDTO product = apiProducts.getProduct(item.getProduct_id());
-                item.setCantidad(item.getCantidad() + dto.cantidad());
-                item.setTotal(item.getCantidad() * product.price());
 
-            }*/
                 CarritoItem nuevoItem = new CarritoItem();
                 nuevoItem.setProduct_id(dto.product_id());
+            System.out.println("Hasta aca llega");
                 ProductDTO product = apiProducts.getProduct(dto.product_id());
+            System.out.println("Lego?");
                 System.out.println(product.product_name() + " " + product.price());
                 nuevoItem.setCantidad(dto.cantidad());
                 nuevoItem.setTotal(dto.cantidad() * product.price());
@@ -131,11 +149,28 @@ public class CarritoItemService implements ICarritoItemService{
         Carrito newCarrito = new Carrito();
         carritoRepository.save(newCarrito);
 
+        LocalDate fechaDeHoy = LocalDate.now();
+        String fechaStr = fechaDeHoy.toString();
+
+
         Set<Long> carritos = user.getCarrito_id();
         carritos.add(newCarrito.getCarrito_id());
 
+
         user.setCarrito_id(carritos);
         apiUsers.addCarritoToUser(user.getUser_id(),newCarrito.getCarrito_id());
+
+        apiVentas.saveVenta(fechaStr,carrito.getCarrito_id());
+
+    }
+
+    public void fallbackGetUsersByCarrito(Long id_carrito, List<CarritoItemsDTO> itemsDTO, Throwable throwable) {
+        throw new RuntimeException("EL microservicio users no está funcionando, por favor intentalo más tarde");
+    }
+
+    public void createException() {
+
+        throw new IllegalArgumentException("Prueba resilience y circuit breaker");
 
     }
 

@@ -36,7 +36,7 @@ public class CarritoController {
     @PreAuthorize("permitAll()")
     @GetMapping("/traer/{id_carrito}")
     public ResponseEntity<?> getCarritoById(@PathVariable Long id_carrito) {
-        Carrito carrito = carritoService.getCarrito(id_carrito);
+        CarritoDTO carrito = carritoService.getCarrito(id_carrito);
         return ResponseEntity.ok(carrito);
     }
 

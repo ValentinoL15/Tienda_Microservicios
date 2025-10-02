@@ -35,9 +35,21 @@ public class CarritoService implements ICarritoService{
     }
 
     @Override
-    public Carrito getCarrito(Long id_carrito) {
-        return carritoRepository.findById(id_carrito)
+    public CarritoDTO getCarrito(Long id_carrito) {
+        Carrito carri = carritoRepository.findById(id_carrito)
                 .orElseThrow(() -> new RuntimeException("No se encuentra el carrito"));
+
+        List<CarritoItemsDTO> itemsDTO = carri.getItems()
+                .stream()
+                .map(item -> new CarritoItemsDTO(
+                        item.getId_carritoItem(),
+                        item.getProduct_id(),
+                        item.getCantidad(),
+                        item.getTotal()
+                ))
+                .toList();
+
+        return new CarritoDTO(carri.getCarrito_id(),carri.getTotal(),itemsDTO);
     }
 
     @Override

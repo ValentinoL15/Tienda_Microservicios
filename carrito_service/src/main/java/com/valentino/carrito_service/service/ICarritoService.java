@@ -9,7 +9,7 @@ public interface ICarritoService {
 
     public List<Carrito> getCarritos();
 
-    public Carrito getCarrito(Long id_carrito);
+    public CarritoDTO getCarrito(Long id_carrito);
 
     public void saveCarrito(CarritoDTO carritoDTO);
 

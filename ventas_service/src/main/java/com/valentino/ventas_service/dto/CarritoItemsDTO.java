@@ -1,6 +1,6 @@
-package com.valentino.users_service.dto;
+package com.valentino.ventas_service.dto;
 
-public record CarritoItemsDTO(Long id_carritoItem,
+public record CarritoItemsDTO(Long carritoId,
                               Long product_id,
                               int cantidad,
                               Double total) {

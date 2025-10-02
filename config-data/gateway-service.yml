@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: tienda-gateway
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+server:
+  port: 8085
+
