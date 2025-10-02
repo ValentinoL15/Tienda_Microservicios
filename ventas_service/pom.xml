@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.valentino</groupId>
 	<artifactId>ventas_service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>ventas_service</name>
 	<description>Tienda_Microservices Ventas</description>
 	<url/>
