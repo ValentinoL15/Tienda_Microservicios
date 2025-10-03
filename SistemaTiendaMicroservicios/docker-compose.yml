@@ -19,14 +19,14 @@ services:
     image: mysql:8.0.33 
     container_name: users-db
     environment:
-      MYSQL_DATABASE: tienda_users
-      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: ${USERS_DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${USERS_DB_PASSWORD}
     ports:
       - "3307:3306"
     networks:
-      - 'tienda-network'
+      - tienda-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-padmin"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${USERS_DB_PASSWORD}"]
       start_period: 40s
       interval: 15s
       timeout: 10s
@@ -38,17 +38,18 @@ services:
     ports:
       - "8081:8081"
     networks:
-      - 'tienda-network'
+      - tienda-network
+    env_file:
+      - .env
     environment:
-      DB_URL: jdbc:mysql://users-db:3306/tienda_users?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
-      DB_HOST: users-db
-      DB_PORT: 3306
-      DB_NAME: tienda_users
-      DB_USER: root
-      DB_PASSWORD: admin
-      PRIVATE_KEY: 08bd2411a8d80fef4b10e2edd195215e125a55f7069dc938f1d705f725066c0b
-      USER_GENERATOR: VALENTINO-SEC
-      EUREKA_SERVER: http://eureka-server:8761/eureka
+      DB_HOST: ${USERS_DB_HOST}
+      DB_PORT: ${USERS_DB_PORT}
+      DB_NAME: ${USERS_DB_NAME}
+      DB_USER: ${USERS_DB_USER}
+      DB_PASSWORD: ${USERS_DB_PASSWORD}
+      PRIVATE_KEY: ${PRIVATE_KEY}
+      USER_GENERATOR: ${USER_GENERATOR}
+      EUREKA_SERVER: ${EUREKA_SERVER}
     depends_on:
       eureka-server:
         condition: service_healthy
@@ -66,14 +67,14 @@ services:
     image: mysql:8.0.33
     container_name: products-db
     environment:
-      MYSQL_DATABASE: tienda_products
-      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: ${PRODUCTS_DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${PRODUCTS_DB_PASSWORD}
     ports:
       - "3308:3306"
     networks:
-      - 'tienda-network'
+      - tienda-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-padmin"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${PRODUCTS_DB_PASSWORD}"]
       start_period: 40s
       interval: 15s
       timeout: 10s
@@ -85,17 +86,18 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - 'tienda-network'
+      - tienda-network
+    env_file:
+      - .env
     environment:
-      DB_URL: jdbc:mysql://products-db:3306/tienda_products?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
-      DB_HOST: products-db
-      DB_PORT: 3306
-      DB_NAME: tienda_products
-      DB_USER: root
-      DB_PASSWORD: admin
-      PRIVATE_KEY: 08bd2411a8d80fef4b10e2edd195215e125a55f7069dc938f1d705f725066c0b
-      USER_GENERATOR: VALENTINO-SEC
-      EUREKA_SERVER: http://eureka-server:8761/eureka
+      DB_HOST: ${PRODUCTS_DB_HOST}
+      DB_PORT: ${PRODUCTS_DB_PORT}
+      DB_NAME: ${PRODUCTS_DB_NAME}
+      DB_USER: ${PRODUCTS_DB_USER}
+      DB_PASSWORD: ${PRODUCTS_DB_PASSWORD}
+      PRIVATE_KEY: ${PRIVATE_KEY}
+      USER_GENERATOR: ${USER_GENERATOR}
+      EUREKA_SERVER: ${EUREKA_SERVER}
     depends_on:
       eureka-server:
         condition: service_healthy
@@ -108,19 +110,19 @@ services:
       timeout: 10s
       retries: 5
       start_period: 90s
-      
+
   carrito-db:
     image: mysql:8.0.33
     container_name: carrito-db
     environment:
-      MYSQL_DATABASE: tienda_carrito
-      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: ${CARRITO_DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${CARRITO_DB_PASSWORD}
     ports:
       - "3309:3306"
     networks:
-      - 'tienda-network'
+      - tienda-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-padmin"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${CARRITO_DB_PASSWORD}"]
       start_period: 40s
       interval: 15s
       timeout: 10s
@@ -132,17 +134,18 @@ services:
     ports:
       - "8082:8082"
     networks:
-      - 'tienda-network'
+      - tienda-network
+    env_file:
+      - .env
     environment:
-      DB_URL: jdbc:mysql://carrito-db:3306/tienda_carrito?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
-      DB_HOST: carrito-db
-      DB_PORT: 3306
-      DB_NAME: tienda_carrito
-      DB_USER: root
-      DB_PASSWORD: admin
-      PRIVATE_KEY: 08bd2411a8d80fef4b10e2edd195215e125a55f7069dc938f1d705f725066c0b
-      USER_GENERATOR: VALENTINO-SEC
-      EUREKA_SERVER: http://eureka-server:8761/eureka
+      DB_HOST: ${CARRITO_DB_HOST}
+      DB_PORT: ${CARRITO_DB_PORT}
+      DB_NAME: ${CARRITO_DB_NAME}
+      DB_USER: ${CARRITO_DB_USER}
+      DB_PASSWORD: ${CARRITO_DB_PASSWORD}
+      PRIVATE_KEY: ${PRIVATE_KEY}
+      USER_GENERATOR: ${USER_GENERATOR}
+      EUREKA_SERVER: ${EUREKA_SERVER}
     depends_on:
       eureka-server:
         condition: service_healthy
@@ -155,19 +158,19 @@ services:
       timeout: 10s
       retries: 5
       start_period: 90s
-      
+
   ventas-db:
     image: mysql:8.0.33
     container_name: ventas-db
     environment:
-      MYSQL_DATABASE: tienda_ventas
-      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: ${VENTAS_DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${VENTAS_DB_PASSWORD}
     ports:
       - "3310:3306"
     networks:
-      - 'tienda-network'
+      - tienda-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-padmin"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${VENTAS_DB_PASSWORD}"]
       start_period: 40s
       interval: 15s
       timeout: 10s
@@ -179,17 +182,18 @@ services:
     ports:
       - "8086:8086"
     networks:
-      - 'tienda-network'
+      - tienda-network
+    env_file:
+      - .env
     environment:
-      DB_URL: jdbc:mysql://ventas-db:3306/tienda_ventas?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
-      DB_HOST: ventas-db
-      DB_PORT: 3306
-      DB_NAME: tienda_ventas
-      DB_USER: root
-      DB_PASSWORD: admin
-      PRIVATE_KEY: 08bd2411a8d80fef4b10e2edd195215e125a55f7069dc938f1d705f725066c0b
-      USER_GENERATOR: VALENTINO-SEC
-      EUREKA_SERVER: http://eureka-server:8761/eureka
+      DB_HOST: ${VENTAS_DB_HOST}
+      DB_PORT: ${VENTAS_DB_PORT}
+      DB_NAME: ${VENTAS_DB_NAME}
+      DB_USER: ${VENTAS_DB_USER}
+      DB_PASSWORD: ${VENTAS_DB_PASSWORD}
+      PRIVATE_KEY: ${PRIVATE_KEY}
+      USER_GENERATOR: ${USER_GENERATOR}
+      EUREKA_SERVER: ${EUREKA_SERVER}
     depends_on:
       eureka-server:
         condition: service_healthy

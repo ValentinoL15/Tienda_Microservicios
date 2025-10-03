@@ -1,0 +1,9 @@
+# Environment variables
+.env
+**/.env
+*.env
+.env.local
+**/.env.local
+   
+# Docker
+docker-compose.override.yml
