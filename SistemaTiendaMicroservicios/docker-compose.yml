@@ -1,0 +1,208 @@
+version: '3.8'
+
+services: 
+  eureka-server:
+    build: eureka-server
+    mem_limit: 512m
+    ports:
+      - "8761:8761"
+    networks:
+      - tienda-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health || exit 0"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  users-db:
+    image: mysql:8.0.33 
+    container_name: users-db
+    environment:
+      MYSQL_DATABASE: tienda_users
+      MYSQL_ROOT_PASSWORD: admin
+    ports:
+      - "3307:3306"
+    networks:
+      - 'tienda-network'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-padmin"]
+      start_period: 40s
+      interval: 15s
+      timeout: 10s
+      retries: 15
+
+  users-service:
+    build: users-service
+    mem_limit: 512m
+    ports:
+      - "8081:8081"
+    networks:
+      - 'tienda-network'
+    environment:
+      DB_URL: jdbc:mysql://users-db:3306/tienda_users?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+      DB_HOST: users-db
+      DB_PORT: 3306
+      DB_NAME: tienda_users
+      DB_USER: root
+      DB_PASSWORD: admin
+      PRIVATE_KEY: 08bd2411a8d80fef4b10e2edd195215e125a55f7069dc938f1d705f725066c0b
+      USER_GENERATOR: VALENTINO-SEC
+      EUREKA_SERVER: http://eureka-server:8761/eureka
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      users-db:
+        condition: service_healthy
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health || exit 0"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  products-db:
+    image: mysql:8.0.33
+    container_name: products-db
+    environment:
+      MYSQL_DATABASE: tienda_products
+      MYSQL_ROOT_PASSWORD: admin
+    ports:
+      - "3308:3306"
+    networks:
+      - 'tienda-network'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-padmin"]
+      start_period: 40s
+      interval: 15s
+      timeout: 10s
+      retries: 15
+
+  products-service:
+    build: products-service
+    mem_limit: 512m
+    ports:
+      - "8080:8080"
+    networks:
+      - 'tienda-network'
+    environment:
+      DB_URL: jdbc:mysql://products-db:3306/tienda_products?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+      DB_HOST: products-db
+      DB_PORT: 3306
+      DB_NAME: tienda_products
+      DB_USER: root
+      DB_PASSWORD: admin
+      PRIVATE_KEY: 08bd2411a8d80fef4b10e2edd195215e125a55f7069dc938f1d705f725066c0b
+      USER_GENERATOR: VALENTINO-SEC
+      EUREKA_SERVER: http://eureka-server:8761/eureka
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      products-db:
+        condition: service_healthy
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health || exit 0"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+      
+  carrito-db:
+    image: mysql:8.0.33
+    container_name: carrito-db
+    environment:
+      MYSQL_DATABASE: tienda_carrito
+      MYSQL_ROOT_PASSWORD: admin
+    ports:
+      - "3309:3306"
+    networks:
+      - 'tienda-network'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-padmin"]
+      start_period: 40s
+      interval: 15s
+      timeout: 10s
+      retries: 15
+
+  carrito-service:
+    build: carrito-service
+    mem_limit: 512m
+    ports:
+      - "8082:8082"
+    networks:
+      - 'tienda-network'
+    environment:
+      DB_URL: jdbc:mysql://carrito-db:3306/tienda_carrito?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+      DB_HOST: carrito-db
+      DB_PORT: 3306
+      DB_NAME: tienda_carrito
+      DB_USER: root
+      DB_PASSWORD: admin
+      PRIVATE_KEY: 08bd2411a8d80fef4b10e2edd195215e125a55f7069dc938f1d705f725066c0b
+      USER_GENERATOR: VALENTINO-SEC
+      EUREKA_SERVER: http://eureka-server:8761/eureka
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      carrito-db:
+        condition: service_healthy
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health || exit 0"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+      
+  ventas-db:
+    image: mysql:8.0.33
+    container_name: ventas-db
+    environment:
+      MYSQL_DATABASE: tienda_ventas
+      MYSQL_ROOT_PASSWORD: admin
+    ports:
+      - "3310:3306"
+    networks:
+      - 'tienda-network'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-padmin"]
+      start_period: 40s
+      interval: 15s
+      timeout: 10s
+      retries: 15
+
+  ventas-service:
+    build: ventas-service
+    mem_limit: 512m
+    ports:
+      - "8086:8086"
+    networks:
+      - 'tienda-network'
+    environment:
+      DB_URL: jdbc:mysql://ventas-db:3306/tienda_ventas?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+      DB_HOST: ventas-db
+      DB_PORT: 3306
+      DB_NAME: tienda_ventas
+      DB_USER: root
+      DB_PASSWORD: admin
+      PRIVATE_KEY: 08bd2411a8d80fef4b10e2edd195215e125a55f7069dc938f1d705f725066c0b
+      USER_GENERATOR: VALENTINO-SEC
+      EUREKA_SERVER: http://eureka-server:8761/eureka
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      ventas-db:
+        condition: service_healthy
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/actuator/health || exit 0"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+      
+networks:
+  tienda-network:
+    driver: bridge
