@@ -43,7 +43,7 @@ public class RoleController {
         return role.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("permitAll()")
     @PostMapping("/crear-role")
     public ResponseEntity<Role> crearRole(@RequestBody Role role) {
         try {
