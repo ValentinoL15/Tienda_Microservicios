@@ -136,3 +136,19 @@ La seguridad está centralizada en el **API Gateway**. El flujo es el siguiente:
 
 Todas las peticiones deben realizarse a través del API Gateway (`http://localhost:8085`).
 
+## 🧪 Documentación de la API (Postman)
+
+La forma más sencilla de probar los endpoints de la API es a través de la colección de Postman que preparé.
+
+### Opción 1: Botón "Run in Postman"
+
+Haz clic en el siguiente botón para importar la colección directamente a tu aplicación de Postman. Esto te permitirá tener todos los endpoints listos para usar.
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/33093370-0fec5206-fbe2-4442-89e4-535266d5f0d7)
+
+### Opción 2: Enlace a la Documentación Web
+
+Si prefieres, también puedes ver la documentación completa de la API directamente en tu navegador a través del siguiente enlace público:
+
+[Ver Documentación de la API en Postman](https://postman.co/workspace/My-Workspace~08f4162e-382e-46cc-87e8-2fda5fd4fc68/collection/33093370-0fec5206-fbe2-4442-89e4-535266d5f0d7?action=share&creator=33093370)
+
