@@ -1,0 +1,65 @@
+[33mcommit 0452f367cf721a09167ee5012d24635ce0cf732a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: ValentinoL15 <pichilongo1@gmail.com>
+Date:   Fri Oct 3 10:39:13 2025 -0300
+
+    up
+
+[33mcommit adf6c9f90cd74d9a7925e20ea78c025f85d10b4b[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: ValentinoL15 <pichilongo1@gmail.com>
+Date:   Fri Oct 3 10:26:11 2025 -0300
+
+    add gitignore
+
+[33mcommit ccabe6b6f136dbf2688d3bcba536563f34106d7c[m
+Author: ValentinoL15 <pichilongo1@gmail.com>
+Date:   Fri Oct 3 10:11:47 2025 -0300
+
+    remove .env
+
+[33mcommit a4a383960a2697598c9a9ba02c3d1ce70719bc5d[m
+Author: ValentinoL15 <pichilongo1@gmail.com>
+Date:   Fri Oct 3 10:10:26 2025 -0300
+
+    add gitignore
+
+[33mcommit 64b34a60e214c75f1dbe083150b34a53319dc269[m
+Author: ValentinoL15 <pichilongo1@gmail.com>
+Date:   Fri Oct 3 10:07:35 2025 -0300
+
+    up
+
+[33mcommit f0acac127fdd3d84df57681288b73e612028b295[m
+Author: ValentinoL15 <pichilongo1@gmail.com>
+Date:   Fri Oct 3 10:02:30 2025 -0300
+
+    ignore
+
+[33mcommit 4653646cfb9db02d46993b1a1b4e419d7f8ff236[m
+Author: ValentinoL15 <pichilongo1@gmail.com>
+Date:   Fri Oct 3 09:27:47 2025 -0300
+
+    config
+
+[33mcommit 42eb907ccf6c15e9099fdc6299f6b304a613cde9[m
+Author: ValentinoL15 <pichilongo1@gmail.com>
+Date:   Fri Oct 3 09:21:00 2025 -0300
+
+    config
+
+[33mcommit 389d7ccc35bbd3b3f356b878c9ce36d39872669d[m
+Author: ValentinoL15 <pichilongo1@gmail.com>
+Date:   Thu Oct 2 13:13:08 2025 -0300
+
+    configurations
+
+[33mcommit 20660c304b53354c27786f72ae81535ac60619c3[m
+Author: ValentinoL15 <pichilongo1@gmail.com>
+Date:   Thu Oct 2 09:47:03 2025 -0300
+
+    add config server and configurations
+
+[33mcommit 233298f399bd2788ef568a77c21ec2e13e636d2c[m
+Author: ValentinoL15 <pichilongo1@gmail.com>
+Date:   Fri Sep 19 15:24:18 2025 -0300
+
+    first commit
