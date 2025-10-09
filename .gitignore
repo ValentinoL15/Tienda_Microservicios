@@ -21,6 +21,3 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
-
-# Ignorar archivo de Docker Compose con secretos
-docker-compose.yml

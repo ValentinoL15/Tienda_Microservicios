@@ -1,0 +1,176 @@
+services:
+  eureka-server:
+    build: eureka-server
+    mem_limit: 512m
+    ports:
+      - "8761:8761"
+    networks:
+      - 'tienda-network'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health || exit 0"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: always
+
+  users-service:
+    build: users_service
+    mem_limit: 512m
+    ports:
+      - "8081:8081"
+    networks:
+      - 'tienda-network'
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_URL: jdbc:mysql://users-db:3306/tienda_users?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      PRIVATE_KEY: ${PRIVATE_KEY}
+      USER_GENERATOR: ${USER_GENERATOR}
+      EUREKA_SERVER: http://eureka-server:8761/eureka
+    depends_on:
+      users-db:
+        condition: service_healthy
+  users-db:
+    image: mysql:8.0.33
+    environment:
+      MYSQL_DATABASE: tienda_users
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3307:3306"
+    networks:
+      - 'tienda-network'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${DB_USER}", "-p${DB_PASSWORD}"]
+      start_period: 40s
+      interval: 15s
+      timeout: 10s
+      retries: 15
+    restart: always
+
+  products-service:
+    build: products_service
+    mem_limit: 512m
+    ports:
+      - "8080:8080"
+    networks:
+      - 'tienda-network'
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_URL: jdbc:mysql://products-db:3306/tienda_products?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      PRIVATE_KEY: ${PRIVATE_KEY}
+      USER_GENERATOR: ${USER_GENERATOR}
+      EUREKA_SERVER: http://eureka-server:8761/eureka
+    depends_on:
+      products-db:
+        condition: service_healthy
+  products-db:
+    image: mysql:8.0.33
+    environment:
+      MYSQL_DATABASE: tienda_products
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3308:3306"
+    networks:
+      - 'tienda-network'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${DB_USER}", "-p${DB_PASSWORD}"]
+      start_period: 40s
+      interval: 15s
+      timeout: 10s
+      retries: 15
+    restart: always
+
+  carrito-service:
+    build: carrito_service
+    mem_limit: 512m
+    ports:
+      - "8082:8082"
+    networks:
+      - 'tienda-network'
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_URL: jdbc:mysql://carrito-db:3306/tienda_carrito?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      PRIVATE_KEY: ${PRIVATE_KEY}
+      USER_GENERATOR: ${USER_GENERATOR}
+      EUREKA_SERVER: http://eureka-server:8761/eureka
+    depends_on:
+      carrito-db:
+        condition: service_healthy
+  carrito-db:
+    image: mysql:8.0.33
+    environment:
+      MYSQL_DATABASE: tienda_carrito
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3309:3306"
+    networks:
+      - 'tienda-network'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${DB_USER}", "-p${DB_PASSWORD}"]
+      start_period: 40s
+      interval: 15s
+      timeout: 10s
+      retries: 15
+    restart: always
+
+  ventas-service:
+    build: ventas_service
+    mem_limit: 512m
+    ports:
+      - "8086:8086"
+    networks:
+      - 'tienda-network'
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_URL: jdbc:mysql://ventas-db:3306/tienda_ventas?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      EUREKA_SERVER: http://eureka-server:8761/eureka
+    depends_on:
+      ventas-db:
+        condition: service_healthy
+    restart: always
+  ventas-db:
+    image: mysql:8.0.33
+    environment:
+      MYSQL_DATABASE: tienda_ventas
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3310:3306"
+    networks:
+      - 'tienda-network'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${DB_USER}", "-p${DB_PASSWORD}"]
+      start_period: 40s
+      interval: 15s
+      timeout: 10s
+      retries: 15
+    restart: always
+
+  tienda-gateway:
+    build: tienda-gateway
+    mem_limit: 512m
+    ports:
+      - "8085:8085"
+    networks:
+      - 'tienda-network'
+    environment:
+      EUREKA_SERVER: http://eureka-server:8761/eureka
+    depends_on:
+      eureka-server:
+        condition: service_healthy # Espera a que el healthcheck de Eureka sea exitoso
+    restart: always
+
+networks:
+  tienda-network:
+    
